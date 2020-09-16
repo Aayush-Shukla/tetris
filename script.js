@@ -103,17 +103,51 @@ var drawImage =function f() {
 setInterval(update,1000)
 
 function update(){
-    ctx.clearRect(0,0,canvas.width,canvas.height)
+    
     player.pos.y++
+    
+    
+}
+
+function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height)
+   
     if(checkCollision(piece,screen,player.pos)){
         player.pos.y--
         merge(piece, screen,player.pos);
         player.pos.y=5
 
     }
+    
     drawImage()
     drawMatrix(piece,player.pos)
+    requestAnimationFrame(draw)
+
+
 }
+
+
+function wallCollision(piece,screen,offset)
+{
+    for (var r=0;r<piece.length;r++){
+        for (var c=0;c<piece[r].length;c++) {
+            if(piece[r][c]==0){
+                continue
+            }
+            console.log(c + offset.x)
+            if(screen[c + offset.x] ===undefined || offset.x+c >mapcol-1 ||(piece[r][c] !== 0 && screen[r + offset.y][c + offset.x] !== 0 ))
+                 {
+                    return true
+                 }
+    
+        }
+    }
+    return false
+
+
+
+}
+
 
 
 function checkCollision(piece,screen,offset){
@@ -122,9 +156,7 @@ function checkCollision(piece,screen,offset){
             if(piece[r][c]==0){
                 continue
             }
-            if(piece[r][c] !== 0 &&
-                (screen[r + offset.y] &&
-                 screen[r + offset.y][c + offset.x]) !== 0)
+            if(piece[r][c] !== 0 &&(screen[r + offset.y] &&screen[r + offset.y][c + offset.x]) !== 0)
                  {
                      return true
                  }
@@ -138,7 +170,7 @@ function checkCollision(piece,screen,offset){
 
 
 function merge(piece,screen,offset) {
-    console.log("merging")
+    // console.log("merging")
     for (var r=0;r<piece.length;r++){
         for (var c=0;c<piece[r].length;c++) {
             if (piece[r][c] !== 0) {
@@ -146,7 +178,31 @@ function merge(piece,screen,offset) {
             }
             
             }}
-            console.table(screen)
+            // console.table(screen)
 }
 
+
+
+document.addEventListener('keydown', event => {
+    if (event.keyCode === 37) {
+
+        player.pos.x--;
+        if(wallCollision(piece,screen,player.pos)){
+            console.log("in")
+
+            player.pos.x++       
+        }
+    } else if (event.keyCode === 39) {
+        player.pos.x++;
+        if(wallCollision(piece,screen,player.pos)){
+            console.log("in")
+            player.pos.x--        
+        }
+    } else if (event.keyCode === 40) {
+        player.pos.y++;
+    }
+});
+
 tileset.onload = drawImage
+
+draw()
