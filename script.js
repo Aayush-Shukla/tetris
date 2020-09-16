@@ -56,14 +56,18 @@ var drawImage =function f() {
             // console.log("hi")
             
 
-            
-            
+            if(screen[r][c]!==0){
+                ctx.drawImage(tileset, tilesize, (0), tilesize, tilesize, (c * tilesize ), (r * tilesize ), tilesize , tilesize )
+                }
+        
+            else{
                 ctx.drawImage(tileset, (0), (0), tilesize, tilesize, (c * tilesize ), (r * tilesize ), tilesize , tilesize )
-            
+            }
+        }
         //
 
         }
-    }
+    
     drawMatrix(piece,player.pos)
     }
 
@@ -101,7 +105,48 @@ setInterval(update,1000)
 function update(){
     ctx.clearRect(0,0,canvas.width,canvas.height)
     player.pos.y++
+    if(checkCollision(piece,screen,player.pos)){
+        player.pos.y--
+        merge(piece, screen,player.pos);
+        player.pos.y=5
+
+    }
     drawImage()
     drawMatrix(piece,player.pos)
 }
+
+
+function checkCollision(piece,screen,offset){
+    for (var r=0;r<piece.length;r++){
+        for (var c=0;c<piece[r].length;c++) {
+            if(piece[r][c]==0){
+                continue
+            }
+            if(piece[r][c] !== 0 &&
+                (screen[r + offset.y] &&
+                 screen[r + offset.y][c + offset.x]) !== 0)
+                 {
+                     return true
+                 }
+    
+        }
+    }
+    return false
+
+
+}
+
+
+function merge(piece,screen,offset) {
+    console.log("merging")
+    for (var r=0;r<piece.length;r++){
+        for (var c=0;c<piece[r].length;c++) {
+            if (piece[r][c] !== 0) {
+                screen[r + offset.y][c + offset.x] = piece[r][c];
+            }
+            
+            }}
+            console.table(screen)
+}
+
 tileset.onload = drawImage
