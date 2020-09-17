@@ -2,7 +2,7 @@ let canvas = document.getElementById('canvas')
 let ctx = canvas.getContext('2d');
 
 var tileset = new Image()
-tileset.src = './tileset.png'
+tileset.src = './components/tileset.png'
 
 var index = 0
 var tilesize = 30;
@@ -13,38 +13,17 @@ var mapcol = 10;
 var yView = 4
 var playing = true
 var score=0
+var pos= {
+    x: 3,
+    y: 0
+}
 
-
-
-// var tempshape=[
-//     [
-//         [0,0,0],
-//         [1,1,1],
-//         [0,1,0]
-//     ],
-//     [
-//         [0,1,0],
-//         [0,1,1],
-//         [0,1,0]
-//         ],
-//     [
-//         [0,1,0],
-//         [1,1,1],
-//         [0,0,0]
-//     ],
-//     [
-//         [0,1,0],
-//         [1,1,0],
-//         [0,1,0]
-//     ]
-// ]
-// var index = 0
 var shapeIndex = Math.floor(Math.random() * shape.length)
 var index= Math.floor(Math.random() * shape[shapeIndex].length)
 var piece = shape[shapeIndex][index]
-// var piece=tempshape[index]
 
-console.log(piece)
+
+
 
 
 
@@ -68,13 +47,13 @@ var drawImage = function f() {
                 ctx.drawImage(tileset, (0), (0), tilesize, tilesize, (c * tilesize), ((r - yView) * tilesize), tilesize, tilesize)
             }
         }
-        //
+        
 
     }
 
     writeScore()
 
-    drawMatrix(piece, player.pos)
+    drawMatrix(piece,   pos)
 
 }
 
@@ -94,13 +73,7 @@ function drawMatrix(matrix, offset) {
     }
 }
 
-const player = {
-    pos: {
-        x: 3,
-        y: 0
-    },
-    matrix: piece,
-};
+
 
 
 
@@ -108,7 +81,7 @@ setInterval(update, 1000)
 
 function update() {
 
-    player.pos.y++
+      pos.y++
 
 
 }
@@ -116,11 +89,11 @@ function update() {
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-    if (checkCollision(piece, screen, player.pos)) {
-        player.pos.y--
-        merge(piece, screen, player.pos);
-        player.pos.y = 0
-        player.pos.x = 3
+    if (checkCollision(piece, screen,   pos)) {
+          pos.y--
+        merge(piece, screen,   pos);
+          pos.y = 0
+          pos.x = 3
 
         shapeIndex = Math.floor(Math.random() * shape.length)
         index = Math.floor(Math.random() * shape[shapeIndex].length)
@@ -131,7 +104,7 @@ function draw() {
     }
 
     drawImage()
-    drawMatrix(piece, player.pos)
+    drawMatrix(piece,   pos)
     var animate = requestAnimationFrame(draw)
     if (gameOver()) {
         cancelAnimationFrame(animate)
@@ -147,17 +120,6 @@ function draw() {
 
 }
 
-function gameOver() {
-    var flag = false
-    for (var i = 0; i < screen[yView - 1].length; i++) {
-        if (screen[yView - 1][i] == 1) {
-            playing = false
-
-            return true
-        }
-    }
-    return false
-}
 
 function wallCollision(piece, screen, offset) {
     for (var r = 0; r < piece.length; r++) {
@@ -200,6 +162,31 @@ function checkCollision(piece, screen, offset) {
 }
 
 
+
+
+function rotatePiece(piece, screen, offset) {
+
+    var temp = index
+
+    console.log(index, "-----")
+    index++
+    index %= 4
+    console.log(wallCollision(piece, screen, offset))
+    piece = shape[shapeIndex][index]
+
+    if (wallCollision(piece, screen, offset) || checkCollision(piece, screen, offset)) {
+        console.log("true")
+        index = temp
+        piece = shape[shapeIndex][index]
+
+    }
+    console.log(index, "-------------")
+
+
+}
+
+
+
 function merge(piece, screen, offset) {
     // console.log("merging")
     console.log(piece, screen, offset)
@@ -216,6 +203,8 @@ function merge(piece, screen, offset) {
 
     checkLines()
 }
+
+
 
 
 
@@ -246,6 +235,8 @@ function checkLines() {
 }
 
 
+
+
 function writeScore(){
     console.log("oinso")
     var text=document.getElementById("score")
@@ -253,27 +244,20 @@ function writeScore(){
 }
 
 
-function rotatePiece(piece, screen, offset) {
 
-    var temp = index
 
-    console.log(index, "-----")
-    index++
-    index %= 4
-    console.log(wallCollision(piece, screen, offset))
-    piece = shape[shapeIndex][index]
 
-    if (wallCollision(piece, screen, offset) || checkCollision(piece, screen, offset)) {
-        console.log("true")
-        index = temp
-        piece = shape[shapeIndex][index]
+function gameOver() {
+    var flag = false
+    for (var i = 0; i < screen[yView - 1].length; i++) {
+        if (screen[yView - 1][i] == 1) {
+            playing = false
 
+            return true
+        }
     }
-    console.log(index, "-------------")
-
-
+    return false
 }
-
 
 
 document.addEventListener('keydown', event => {
@@ -281,26 +265,26 @@ document.addEventListener('keydown', event => {
     if (playing===true) {
         if (event.keyCode === 37) {
 
-            player.pos.x--;
-            if (wallCollision(piece, screen, player.pos)) {
+              pos.x--;
+            if (wallCollision(piece, screen,   pos)) {
                 console.log("in")
 
-                player.pos.x++
+                  pos.x++
             }
         } else if (event.keyCode === 39) {
-            player.pos.x++;
-            if (wallCollision(piece, screen, player.pos)) {
+              pos.x++;
+            if (wallCollision(piece, screen,   pos)) {
                 console.log("in")
-                player.pos.x--
+                  pos.x--
             }
         } else if (event.keyCode === 40) {
-            player.pos.y++;
-            if (checkCollision(piece, screen, player.pos)) {
-                player.pos.y--
+              pos.y++;
+            if (checkCollision(piece, screen,   pos)) {
+                  pos.y--
             }
         } else if (event.keyCode === 38) {
             console.log(index)
-            rotatePiece(piece, screen, player.pos)
+            rotatePiece(piece, screen,   pos)
             piece = shape[shapeIndex][index]
             // piece=tempshape[index]
 
