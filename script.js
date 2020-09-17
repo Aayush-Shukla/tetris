@@ -195,6 +195,32 @@ function merge(piece,screen,offset) {
             
             }}
             // console.table(screen)
+
+            checkLines()
+        }
+
+
+
+function checkLines(){
+    console.log("called")
+    for (var r=0;r<screen.length;r++){
+        console.log(screen[r])
+        var flag=true
+        for (var c=0;c<screen[r].length;c++) {
+            if(screen[r][c]!=1){
+                flag=false
+            }
+        }
+
+            if (flag==true){
+                screen.splice(r,1)
+                screen.unshift([0,0,0,0,0,0,0,0,0,0])
+
+            }
+
+    }
+
+    
 }
 
 
