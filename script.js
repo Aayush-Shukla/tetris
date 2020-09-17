@@ -249,8 +249,9 @@ var shape = [
 //         [0,1,0]
 //     ]
 // ]
-var index = 0
+// var index = 0
 var shapeIndex = Math.floor(Math.random() * shape.length)
+var index= Math.floor(Math.random() * shape[shapeIndex].length)
 var piece = shape[shapeIndex][index]
 // var piece=tempshape[index]
 
@@ -266,14 +267,12 @@ var drawImage = function f() {
 
     for (var r = yView; r < maprow; r++) {
         for (var c = 0; c < mapcol; c++) {
-            // console.log(map[10*r+c])
+            
             var tile = screen[10 * r + c]
 
             var tileX = tile % tilecol
             var tileY = Math.floor(tile / tilecol)
-            // console.log("hi")
-
-
+       
             if (screen[r][c] !== 0) {
                 ctx.drawImage(tileset, tilesize, (0), tilesize, tilesize, (c * tilesize), ((r - yView) * tilesize), tilesize, tilesize)
             } else {
@@ -297,14 +296,7 @@ function drawMatrix(matrix, offset) {
 
     for (var r = 0; r < matrix.length; r++) {
         for (var c = 0; c < matrix[r].length; c++) {
-            // console.log(map[10*r+c])
-            // var tile = screen[10*r+c]
-
-            // var tileX = tile % tilecol
-            // var tileY = Math.floor(tile / tilecol)
-            // console.log("hi")
-
-
+            
 
             if (matrix[r][c] !== 0) {
                 ctx.drawImage(tileset, tilesize, (0), tilesize, tilesize, (c * tilesize) + offset.x * tilesize, ((r - yView) * tilesize) + offset.y * tilesize, tilesize, tilesize)
@@ -342,7 +334,7 @@ function draw() {
         player.pos.x = 3
 
         shapeIndex = Math.floor(Math.random() * shape.length)
-        index = 0
+        index = Math.floor(Math.random() * shape[shapeIndex].length)
         piece = shape[shapeIndex][index]
 
 
@@ -358,8 +350,8 @@ function draw() {
 
         ctx.font = "40px Arial";
         ctx.fillStyle = "white";
-ctx.textAlign = "center";
-    ctx.fillText("Game Over", canvas.width/2, canvas.height/2);
+        ctx.textAlign = "center";
+         ctx.fillText("Game Over", canvas.width/2, canvas.height/2);
 
     }
 
@@ -421,7 +413,9 @@ function checkCollision(piece, screen, offset) {
 
 function merge(piece, screen, offset) {
     // console.log("merging")
+    console.log(piece, screen, offset)
     for (var r = 0; r < piece.length; r++) {
+        console.log(r)
         for (var c = 0; c < piece[r].length; c++) {
             if (piece[r][c] !== 0) {
                 screen[r + offset.y][c + offset.x] = piece[r][c];
@@ -512,6 +506,9 @@ document.addEventListener('keydown', event => {
             }
         } else if (event.keyCode === 40) {
             player.pos.y++;
+            if (checkCollision(piece, screen, player.pos)) {
+                player.pos.y--
+            }
         } else if (event.keyCode === 38) {
             console.log(index)
             rotatePiece(piece, screen, player.pos)
