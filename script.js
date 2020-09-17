@@ -32,27 +32,86 @@ var screen=[
     
 
 ]
-var shape=[[[0,0,0],
-            [1,1,1],
-            [0,1,0]
+var shape=[
+    [
+            [
+                [0,0,0],
+                [1,1,1],
+                [0,1,0]
             ],
-        [
-        [0,1,0],
-        [0,1,1],
-        [0,1,0]
+            [
+                [0,1,0],
+                [0,1,1],
+                [0,1,0]
                 ],
-            [[0,1,0],
-            [1,1,1],
-            [0,0,0]
+            [
+                [0,1,0],
+                [1,1,1],
+                [0,0,0]
             ],
-            [[0,1,0],
-            [1,1,0],
-            [0,1,0]
+            [
+                [0,1,0],
+                [1,1,0],
+                [0,1,0]
             ]
+    ],
+    [
+            [
+                [0,0,0],
+                [1,1,0],
+                [0,1,1]
+            ],
+            [
+                [0,0,1],
+                [0,1,1],
+                [0,1,0]
+            ],
+            [
+                [1,1,0],
+                [0,1,1],
+                [0,0,0]
+            ],
+            [
+                [0,1,0],
+                [1,1,0],
+                [1,0,0]
+            ]
+        
+        
+        
+    ]
+            
 ]
 
+
+// var tempshape=[
+//     [
+//         [0,0,0],
+//         [1,1,1],
+//         [0,1,0]
+//     ],
+//     [
+//         [0,1,0],
+//         [0,1,1],
+//         [0,1,0]
+//         ],
+//     [
+//         [0,1,0],
+//         [1,1,1],
+//         [0,0,0]
+//     ],
+//     [
+//         [0,1,0],
+//         [1,1,0],
+//         [0,1,0]
+//     ]
+// ]
 var index=0
-var piece=shape[index]
+var shapeIndex=Math.floor(Math.random()*shape.length)
+var piece=shape[shapeIndex][index]
+// var piece=tempshape[index]
+
+console.log(piece)
 
 
 
@@ -132,6 +191,13 @@ function draw(){
         player.pos.y--
         merge(piece, screen,player.pos);
         player.pos.y=5
+        player.pos.x=5
+
+        shapeIndex=Math.floor(Math.random()*shape.length)
+        index=0
+        piece=shape[shapeIndex][index]
+
+
 
     }
     
@@ -150,9 +216,11 @@ function wallCollision(piece,screen,offset)
             if(piece[r][c]==0){
                 continue
             }
-            console.log(c + offset.x)
-            if(screen[c + offset.x] ===undefined || offset.x+c >mapcol-1 ||(piece[r][c] !== 0 && screen[r + offset.y][c + offset.x] !== 0 ))
+            console.table(piece)
+            console.log(screen[c + offset.x]===undefined, offset.x+c>mapcol-1 ,piece[r][c] !== 0,piece[r][c] !== 0)
+            if((screen[c + offset.x] ===undefined || offset.x+c >mapcol-1) || (piece[r][c] !== 0 && screen[r + offset.y][c + offset.x] !== 0))
                  {
+                     console.log("collided")
                     return true
                  }
     
@@ -204,7 +272,7 @@ function merge(piece,screen,offset) {
 function checkLines(){
     console.log("called")
     for (var r=0;r<screen.length;r++){
-        console.log(screen[r])
+        // console.log(screen[r])
         var flag=true
         for (var c=0;c<screen[r].length;c++) {
             if(screen[r][c]!=1){
@@ -224,27 +292,22 @@ function checkLines(){
 }
 
 
-function rotatePiece(piece){
-    // temp=[]
-    
-    //     for (var c=0;c<piece.length;c++) {
-    //         var TempRow=[]
-    //         for (var r=0;r<piece[c].length;r++){
-    //             TempRow.push(piece[r][c])
-    //         }
-    //         temp.push(TempRow)
-    //     }
-    //     console.table(temp)
+function rotatePiece(piece,screen,offset){
 
-    // piece=temp  
-    // console.table(piece)
     var temp=index
 
+    console.log(index,"-----")
     index++ 
     index%=4
-    if(wallCollision(shape[index],screen,player.pos) && checkCollision(shape[index],screen,player.pos))
+    console.log(wallCollision(piece,screen,offset))
+    piece=shape[shapeIndex][index]
+
+    if(wallCollision(piece,screen,offset) || checkCollision(piece,screen,offset))
     {
+        console.log("true")
         index=temp
+    piece=shape[shapeIndex][index]
+
     }
     console.log(index,"-------------")
     
@@ -273,10 +336,12 @@ document.addEventListener('keydown', event => {
     }
     else if (event.keyCode===38){
         console.log(index)
-        rotatePiece(piece)
-        piece=shape[index]
-        console.log(index)
-        console.table(piece)
+        rotatePiece(piece,screen,player.pos)
+        piece=shape[shapeIndex][index]
+        // piece=tempshape[index]
+
+        // console.log(index)
+        // console.table(piece)
     }
 });
 
