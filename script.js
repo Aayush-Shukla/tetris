@@ -284,7 +284,10 @@ var drawImage = function f() {
 
     }
 
+    writeScore()
+
     drawMatrix(piece, player.pos)
+
 }
 
 
@@ -312,7 +315,7 @@ function drawMatrix(matrix, offset) {
 
 const player = {
     pos: {
-        x: 5,
+        x: 3,
         y: 0
     },
     matrix: piece,
@@ -336,7 +339,7 @@ function draw() {
         player.pos.y--
         merge(piece, screen, player.pos);
         player.pos.y = 0
-        player.pos.x = 5
+        player.pos.x = 3
 
         shapeIndex = Math.floor(Math.random() * shape.length)
         index = 0
@@ -352,6 +355,11 @@ function draw() {
     if (gameOver()) {
         cancelAnimationFrame(animate)
         console.log("gamestop")
+
+        ctx.font = "40px Arial";
+        ctx.fillStyle = "white";
+ctx.textAlign = "center";
+    ctx.fillText("Game Over", canvas.width/2, canvas.height/2);
 
     }
 
@@ -443,13 +451,22 @@ function checkLines() {
             screen.splice(r, 1)
             screen.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
             score++
+            
             console.log(score)
 
         }
 
     }
 
+    writeScore()
 
+}
+
+
+function writeScore(){
+    console.log("oinso")
+    var text=document.getElementById("score")
+    text.innerHTML=`Score : ${score}`
 }
 
 
