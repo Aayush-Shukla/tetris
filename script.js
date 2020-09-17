@@ -32,11 +32,27 @@ var screen=[
     
 
 ]
-
-var piece=[[0,0,0],
+var shape=[[[0,0,0],
             [1,1,1],
             [0,1,0]
-                    ]
+            ],
+        [
+        [0,1,0],
+        [0,1,1],
+        [0,1,0]
+                ],
+            [[0,1,0],
+            [1,1,1],
+            [0,0,0]
+            ],
+            [[0,1,0],
+            [1,1,0],
+            [0,1,0]
+            ]
+]
+
+var index=0
+var piece=shape[index]
 
 
 
@@ -182,6 +198,34 @@ function merge(piece,screen,offset) {
 }
 
 
+function rotatePiece(piece){
+    // temp=[]
+    
+    //     for (var c=0;c<piece.length;c++) {
+    //         var TempRow=[]
+    //         for (var r=0;r<piece[c].length;r++){
+    //             TempRow.push(piece[r][c])
+    //         }
+    //         temp.push(TempRow)
+    //     }
+    //     console.table(temp)
+
+    // piece=temp  
+    // console.table(piece)
+    var temp=index
+
+    index++ 
+    index%=4
+    if(wallCollision(shape[index],screen,player.pos) && checkCollision(shape[index],screen,player.pos))
+    {
+        index=temp
+    }
+    console.log(index,"-------------")
+    
+
+}
+
+
 
 document.addEventListener('keydown', event => {
     if (event.keyCode === 37) {
@@ -200,6 +244,13 @@ document.addEventListener('keydown', event => {
         }
     } else if (event.keyCode === 40) {
         player.pos.y++;
+    }
+    else if (event.keyCode===38){
+        console.log(index)
+        rotatePiece(piece)
+        piece=shape[index]
+        console.log(index)
+        console.table(piece)
     }
 });
 
